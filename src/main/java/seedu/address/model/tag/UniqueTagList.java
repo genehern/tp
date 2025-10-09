@@ -21,6 +21,20 @@ public class UniqueTagList {
     private final Map<Tag, ObservableList<Person>> tagMap = new HashMap<>();
 
     /**
+     * Returns an unmodifiable view of the list of persons associated with the given tag.
+     * The tag must exist in the map.
+     * @param tag The tag whose associated persons are to be returned.
+     * @return ObservableList of persons associated with the tag.
+     */
+    public ObservableList<Person> getPersonsWithTag(Tag tag) {
+        requireNonNull(tag);
+        if (!contains(tag)) {
+            throw new TagNotFoundException();
+        }
+        return FXCollections.unmodifiableObservableList(tagMap.get(tag));
+    }
+
+    /**
      * Returns true if the list contains an equivalent tag as the given argument.
      */
     public boolean contains(Tag toCheck) {
