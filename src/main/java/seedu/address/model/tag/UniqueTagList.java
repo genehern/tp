@@ -20,6 +20,11 @@ import seedu.address.model.tag.exceptions.TagNotFoundException;
 public class UniqueTagList {
     private final Map<Tag, ObservableList<Person>> tagMap = new HashMap<>();
 
+    public boolean containsTag(Tag toCheck) {
+        requireNonNull(toCheck);
+        return tagMap.containsKey(toCheck);
+    }
+
     /**
      * Returns true if the list contains an equivalent tag as the given argument.
      */
@@ -28,28 +33,51 @@ public class UniqueTagList {
         return tagMap.containsKey(toCheck);
     }
 
+    public void addTagType(Tag toAdd) {
+        requireNonNull(toAdd);
+        if (containsTag(toAdd)) {
+            return;
+        }
+        tagMap.put(toAdd, FXCollections.observableArrayList());
+    }
+
+    /**
+     * Deletes a tag type from the map and removes it from all associated persons.
+     * @throws TagNotFoundException if the tag to delete does not exist.
+     */
+    public void deleteTagType(Tag toDelete) throws TagNotFoundException {
+        requireNonNull(toDelete);
+        if (!containsTag(toDelete)) {
+            throw new TagNotFoundException();
+        }
+        ObservableList<Person> persons = tagMap.get(toDelete);
+        for (Person person : persons) {
+            person.removeTag(toDelete);
+        }
+        tagMap.remove(toDelete);
+    }
     /**
      * Adds a person to the list of persons for the given tag.
-     * If the tag does not exist, it is created.
+     * @return Set of tags that were not found.
      */
-    public void addPersonToTags(Person toAddPerson) {
+    public Set<Tag> addPersonToTags(Person toAddPerson) {
         requireNonNull(toAddPerson);
         Set<Tag> tags = toAddPerson.getTags();
+        Set<Tag> tagsNotFound = new java.util.HashSet<>();
         for (Tag toAddTag : tags) {
             ObservableList<Person> personList;
 
-            if (contains(toAddTag)) {
+            if (containsTag(toAddTag)) {
                 personList = tagMap.get(toAddTag);
                 if (!personList.contains(toAddPerson)) {
                     personList.add(toAddPerson);
                 }
-                continue;
+                tagMap.put(toAddTag, personList);
             } else {
-                personList = FXCollections.observableArrayList();
-                personList.add(toAddPerson);
+                tagsNotFound.add(toAddTag);
             }
-            tagMap.put(toAddTag, personList);
         }
+        return tagsNotFound;
     }
 
     /**
