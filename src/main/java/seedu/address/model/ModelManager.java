@@ -6,6 +6,7 @@ import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
 
@@ -14,6 +15,8 @@ import javafx.collections.transformation.FilteredList;
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.commons.core.LogsCenter;
 import seedu.address.model.person.Person;
+import seedu.address.model.tag.Tag;
+import seedu.address.model.tag.UniqueTagList;
 import seedu.address.model.util.RelationshipGraph;
 
 /**
@@ -26,6 +29,7 @@ public class ModelManager implements Model {
     private final UserPrefs userPrefs;
     private final FilteredList<Person> filteredPersons;
     private final RelationshipGraph relationshipGraph = new RelationshipGraph();
+    private final UniqueTagList tags;
 
     /**
      * Initializes a ModelManager with the given addressBook and userPrefs.
@@ -36,6 +40,7 @@ public class ModelManager implements Model {
         logger.fine("Initializing with address book: " + addressBook + " and user prefs " + userPrefs);
 
         this.addressBook = new AddressBook(addressBook);
+        this.tags = new UniqueTagList(addressBook);
         this.userPrefs = new UserPrefs(userPrefs);
         filteredPersons = new FilteredList<>(this.addressBook.getPersonList());
     }
@@ -100,19 +105,22 @@ public class ModelManager implements Model {
     @Override
     public void deletePerson(Person target) {
         addressBook.removePerson(target);
+        tags.removePersonFromAllTags(target);
     }
 
     @Override
     public void addPerson(Person person) {
         addressBook.addPerson(person);
+        tags.addPersonToTags(person);
         updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
     }
 
     @Override
     public void setPerson(Person target, Person editedPerson) {
         requireAllNonNull(target, editedPerson);
-
         addressBook.setPerson(target, editedPerson);
+        tags.removePersonFromAllTags(target);
+        tags.addPersonToTags(editedPerson);
     }
 
     //=========== Filtered Person List Accessors =============================================================
@@ -169,4 +177,32 @@ public class ModelManager implements Model {
         return new ArrayList<>(relationshipGraph.getLinked(person));
     }
 
+    //=================Tag Management=========================================================
+    public void deleteTagType(Tag tag) {
+        requireNonNull(tag);
+        tags.deleteTagType(tag);
+    }
+
+
+    /**
+     * Adds multiple tag types to the address book.
+     * Returns a set of tags that were not added because they already exist.
+     */
+    public Set<Tag> addTagTypes(Set<Tag> tagsToAdd) {
+        return tags.addTagTypes(tagsToAdd);
+    }
+
+    /**
+     * Removes a person from a specific tag in the address book.
+     */
+    public void removePersonFromTag(Tag tag, Person person) {
+        tags.removePersonFromTag(tag, person);
+    }
+
+    /**
+     * Returns all tags currently in the address book.
+     */
+    public Set<Tag> getTags() {
+        return tags.getTags();
+    }
 }

@@ -8,19 +8,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import seedu.address.commons.core.LogsCenter;
-import seedu.address.logic.commands.AddCommand;
-import seedu.address.logic.commands.ClearCommand;
-import seedu.address.logic.commands.Command;
-import seedu.address.logic.commands.DeleteCommand;
-import seedu.address.logic.commands.EditCommand;
-import seedu.address.logic.commands.ExitCommand;
-import seedu.address.logic.commands.FilterTagCommand;
-import seedu.address.logic.commands.FindCommand;
-import seedu.address.logic.commands.HelpCommand;
-import seedu.address.logic.commands.LinkCommand;
-import seedu.address.logic.commands.ListCommand;
-import seedu.address.logic.commands.ShowAllCommand;
-import seedu.address.logic.commands.UnlinkCommand;
+import seedu.address.logic.commands.*;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.Model;
 
@@ -62,6 +50,8 @@ public class AddressBookParser {
         logger.fine("Command word: " + commandWord + "; Arguments: " + arguments);
 
         switch (commandWord) {
+        case AddTagsCommand.COMMAND_WORD:
+            return new AddTagsParser().parse(arguments);
 
         case AddCommand.COMMAND_WORD:
             return new AddCommandParser().parse(arguments);
@@ -95,7 +85,6 @@ public class AddressBookParser {
 
         case FilterTagCommand.COMMAND_WORD:
             return new FilterTagCommandParser().parse(arguments);
-
         case ShowAllCommand.COMMAND_WORD:
             return new ShowAllCommand();
 

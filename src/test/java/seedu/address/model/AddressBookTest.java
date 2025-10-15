@@ -105,10 +105,6 @@ public class AddressBookTest {
             return persons;
         }
 
-        @Override
-        public UniqueTagList getTagList() {
-            return new UniqueTagList();
-        }
     }
 
 }

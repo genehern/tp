@@ -17,7 +17,6 @@ import seedu.address.model.tag.UniqueTagList;
 public class AddressBook implements ReadOnlyAddressBook {
 
     private final UniquePersonList persons;
-    private final UniqueTagList tags;
 
     /*
      * The 'unusual' code block below is a non-static initialization block, sometimes used to avoid duplication
@@ -28,7 +27,6 @@ public class AddressBook implements ReadOnlyAddressBook {
      */
     {
         persons = new UniquePersonList();
-        tags = new UniqueTagList();
     }
 
     public AddressBook() {}
@@ -58,7 +56,6 @@ public class AddressBook implements ReadOnlyAddressBook {
         requireNonNull(newData);
 
         setPersons(newData.getPersonList());
-        this.tags.setTags(newData.getTagList());
     }
 
     //// person-level operations
@@ -73,12 +70,10 @@ public class AddressBook implements ReadOnlyAddressBook {
 
     /**
      * Adds a person to the address book.
-     * Add person to the corresponding tags in the tag list.
      * The person must not already exist in the address book.
      */
     public void addPerson(Person p) {
         persons.add(p);
-        tags.addPersonToTags(p);
     }
 
     /**
@@ -98,8 +93,8 @@ public class AddressBook implements ReadOnlyAddressBook {
      */
     public void removePerson(Person key) {
         persons.remove(key);
-        tags.removePersonFromAllTags(key);
     }
+
 
     //// util methods
 
@@ -108,11 +103,6 @@ public class AddressBook implements ReadOnlyAddressBook {
         return new ToStringBuilder(this)
                 .add("persons", persons)
                 .toString();
-    }
-
-    @Override
-    public UniqueTagList getTagList() {
-        return this.tags;
     }
 
     @Override
