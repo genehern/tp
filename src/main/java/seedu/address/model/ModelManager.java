@@ -103,6 +103,18 @@ public class ModelManager implements Model {
     }
 
     @Override
+    public boolean hasTag(Tag tag) {
+        requireNonNull(tag);
+        return tags.containsTag(tag);
+    }
+
+    @Override
+    public boolean personHasValidTags(Person p) {
+        requireNonNull(p);
+        return tags.personHasValidTags(p);
+    }
+
+    @Override
     public void deletePerson(Person target) {
         addressBook.removePerson(target);
         tags.removePersonFromAllTags(target);
@@ -110,8 +122,8 @@ public class ModelManager implements Model {
 
     @Override
     public void addPerson(Person person) {
-        addressBook.addPerson(person);
         tags.addPersonToTags(person);
+        addressBook.addPerson(person);
         updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
     }
 

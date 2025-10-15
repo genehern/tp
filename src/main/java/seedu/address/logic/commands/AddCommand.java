@@ -59,6 +59,11 @@ public class AddCommand extends Command {
             throw new CommandException(MESSAGE_DUPLICATE_PERSON);
         }
 
+        try {
+            model.personHasValidTags(toAdd);
+        } catch (Exception e) {
+            throw new CommandException(e.getMessage());
+        }
         model.addPerson(toAdd);
         return new CommandResult(String.format(MESSAGE_SUCCESS, Messages.format(toAdd)));
     }

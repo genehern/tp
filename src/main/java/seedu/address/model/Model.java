@@ -60,6 +60,10 @@ public interface Model {
      */
     boolean hasPerson(Person person);
 
+    boolean hasTag(Tag tag);
+
+    boolean personHasValidTags(Person p);
+
     /**
      * Deletes the given person.
      * The person must exist in the address book.

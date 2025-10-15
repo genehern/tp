@@ -9,7 +9,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.person.Person;
-import seedu.address.model.tag.exceptions.PersonNotFoundInTagException;
 import seedu.address.model.tag.exceptions.TagNotFoundException;
 
 /**
@@ -19,28 +18,41 @@ import seedu.address.model.tag.exceptions.TagNotFoundException;
 public class UniqueTagList {
     private final Map<Tag, ObservableList<Person>> tagMap = new HashMap<>();
 
-    public boolean containsTag(Tag toCheck) {
-        requireNonNull(toCheck);
-        return tagMap.containsKey(toCheck);
+    /**
+     * Constructs a UniqueTagList from an AddressBook, populating tagMap with all tags and people.
+     */
+    public UniqueTagList(ReadOnlyAddressBook addressBook) {
+        requireNonNull(addressBook);
+        // Add all persons to their respective tags
+        for (Person person : addressBook.getPersonList()) {
+            addPersonToTags(person);
+        }
     }
 
     /**
      * Returns true if the list contains an equivalent tag as the given argument.
      */
-    public boolean contains(Tag toCheck) {
+    public boolean containsTag(Tag toCheck) {
         requireNonNull(toCheck);
         return tagMap.containsKey(toCheck);
     }
 
+    public boolean personHasValidTags(Person person) {
+        requireNonNull(person);
+        Set<Tag> tags = person.getTags();
+        for (Tag tag : tags) {
+            if (!containsTag(tag)) {
+                throw new TagNotFoundException(tag);
+            }
+        }
+        return true;
+    }
+
     /**
      * Deletes a tag type from the map and removes it from all associated persons.
-     * @throws TagNotFoundException if the tag to delete does not exist.
      */
-    public void deleteTagType(Tag toDelete) throws TagNotFoundException {
+    public void deleteTagType(Tag toDelete) {
         requireNonNull(toDelete);
-        if (!containsTag(toDelete)) {
-            throw new TagNotFoundException();
-        }
         ObservableList<Person> persons = tagMap.get(toDelete);
         for (Person person : persons) {
             person.removeTag(toDelete);
@@ -49,47 +61,35 @@ public class UniqueTagList {
     }
     /**
      * Adds a person to the list of persons for the given tag.
-     * @return Set of tags that were not found.
      */
-    public Set<Tag> addPersonToTags(Person toAddPerson) {
+    public void addPersonToTags(Person toAddPerson) {
         requireNonNull(toAddPerson);
         Set<Tag> tags = toAddPerson.getTags();
-        Set<Tag> tagsNotFound = new HashSet<>();
         for (Tag toAddTag : tags) {
             ObservableList<Person> personList;
-
-            if (containsTag(toAddTag)) {
+            if (tagMap.containsKey(toAddTag)) {
                 personList = tagMap.get(toAddTag);
                 if (!personList.contains(toAddPerson)) {
                     personList.add(toAddPerson);
                 }
                 tagMap.put(toAddTag, personList);
             } else {
-                tagsNotFound.add(toAddTag);
+              tagMap.put(toAddTag, FXCollections.observableArrayList(toAddPerson));
             }
         }
-        return tagsNotFound;
     }
 
     /**
-     * Removes a person from one associated tag.
+     * Removes a person from one associated tag. This assumes that the tag exists in the map.
      */
     public void removePersonFromTag(Tag toRemoveTag, Person toRemovePerson) {
         requireAllNonNull(toRemovePerson);
-        if (!contains(toRemoveTag)) {
-            throw new TagNotFoundException();
-        }
         ObservableList<Person> persons = tagMap.get(toRemoveTag);
-        boolean found = false;
         for (int i = 0; i < persons.size(); i++) {
             if (persons.get(i).isSamePerson(toRemovePerson)) {
                 persons.remove(i);
-                found = true;
                 break;
             }
-        }
-        if (!found) {
-            throw new PersonNotFoundInTagException();
         }
     }
 
@@ -150,32 +150,6 @@ public class UniqueTagList {
             }
         }
         return alreadyPresent;
-    }
-
-    private void resetData(Person person) {
-        for (Tag toAddTag : person.getTags()) {
-            ObservableList<Person> personList;
-            if (containsTag(toAddTag)) {
-                personList = tagMap.get(toAddTag);
-                if (!personList.contains(person)) {
-                    personList.add(person);
-                }
-                tagMap.put(toAddTag, personList);
-            } else {
-                tagMap.put(toAddTag, FXCollections.observableArrayList(person));
-            }
-        }
-    }
-
-    /**
-     * Constructs a UniqueTagList from an AddressBook, populating tagMap with all tags and people.
-     */
-    public UniqueTagList(ReadOnlyAddressBook addressBook) {
-        requireNonNull(addressBook);
-        // Add all persons to their respective tags
-        for (Person person : addressBook.getPersonList()) {
-            resetData(person);
-        }
     }
 
     @Override
