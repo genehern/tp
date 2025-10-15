@@ -111,5 +111,10 @@ public interface Model {
      */
     List<Person> getLinkedPersons(Person person);
 
-    Set<Tag> addTagTypes(Set<Tag> tag);
+    //=================Tag Management=========================================================
+    void deleteTagTypes(Set<Tag> tags);
+
+    void addTagTypes(Set<Tag> tag);
+
+    Set<Tag> getTags();
 }

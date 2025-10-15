@@ -103,18 +103,6 @@ public class ModelManager implements Model {
     }
 
     @Override
-    public boolean hasTag(Tag tag) {
-        requireNonNull(tag);
-        return tags.containsTag(tag);
-    }
-
-    @Override
-    public boolean personHasValidTags(Person p) {
-        requireNonNull(p);
-        return tags.personHasValidTags(p);
-    }
-
-    @Override
     public void deletePerson(Person target) {
         addressBook.removePerson(target);
         tags.removePersonFromAllTags(target);
@@ -190,30 +178,38 @@ public class ModelManager implements Model {
     }
 
     //=================Tag Management=========================================================
-    public void deleteTagType(Tag tag) {
+    @Override
+    public boolean hasTag(Tag tag) {
         requireNonNull(tag);
-        tags.deleteTagType(tag);
+        return tags.containsTag(tag);
     }
 
+    @Override
+    public boolean personHasValidTags(Person p) {
+        requireNonNull(p);
+        return tags.personHasValidTags(p);
+    }
+
+    @Override
+    public void deleteTagTypes(Set<Tag> tagsDelete) {
+        requireNonNull(tagsDelete);
+        tags.deleteTagTypes(tagsDelete);
+    }
 
     /**
      * Adds multiple tag types to the address book.
      * Returns a set of tags that were not added because they already exist.
+     *
+     * @return
      */
-    public Set<Tag> addTagTypes(Set<Tag> tagsToAdd) {
-        return tags.addTagTypes(tagsToAdd);
-    }
-
-    /**
-     * Removes a person from a specific tag in the address book.
-     */
-    public void removePersonFromTag(Tag tag, Person person) {
-        tags.removePersonFromTag(tag, person);
+    public void addTagTypes(Set<Tag> tagsToAdd) {
+         tags.addTagTypes(tagsToAdd);
     }
 
     /**
      * Returns all tags currently in the address book.
      */
+    @Override
     public Set<Tag> getTags() {
         return tags.getTags();
     }

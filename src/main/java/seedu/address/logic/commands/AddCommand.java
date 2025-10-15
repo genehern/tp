@@ -61,9 +61,10 @@ public class AddCommand extends Command {
 
         try {
             model.personHasValidTags(toAdd);
-        } catch (Exception e) {
+        } catch (IllegalArgumentException e) {
             throw new CommandException(e.getMessage());
         }
+
         model.addPerson(toAdd);
         return new CommandResult(String.format(MESSAGE_SUCCESS, Messages.format(toAdd)));
     }

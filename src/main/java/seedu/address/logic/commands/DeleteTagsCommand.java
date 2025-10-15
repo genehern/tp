@@ -21,9 +21,9 @@ import java.util.Set;
 /**
  * Adds a person to the address book.
  */
-public class AddTagsCommand extends Command {
+public class DeleteTagsCommand  extends Command {
 
-    public static final String COMMAND_WORD = "add_tag";
+    public static final String COMMAND_WORD = "delete_tag";
 
     public static final String MESSAGE_USAGE = COMMAND_WORD
             + " Parameters: "
@@ -32,31 +32,35 @@ public class AddTagsCommand extends Command {
             + PREFIX_TAG + "friends "
             + PREFIX_TAG + "owesMoney";
 
-    public static final String MESSAGE_SUCCESS = "New tags added: %1$s";
-    public static final String MESSAGE_DUPLICATE_TAG = "Some tags already exist and were not added: %1$s";
+    public static final String MESSAGE_SUCCESS = "All tags deleted: %1$s";
 
-    private final Set<Tag> toAdd;
+    private final Set<Tag> toDelete;
 
     /**
      * Creates an AddCommand to add the specified {@code Person}
      */
-    public AddTagsCommand(Set<Tag> tags) {
+    public DeleteTagsCommand(Set<Tag> tags) {
         requireNonNull(tags);
-        toAdd = tags;
+        toDelete = tags;
     }
 
     @Override
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
-         model.addTagTypes(toAdd);
-        return new CommandResult("Tags added successfully!");
+        for (Tag tag : toDelete) {
+            if (!model.hasTag(tag)) {
+                throw new CommandException(String.format("Tag %s does not exist", tag));
+            }
+        }
+        model.deleteTagTypes(toDelete);
+        return new CommandResult("Tags deleted successfully!");
     }
 
 
     @Override
     public String toString() {
         return new ToStringBuilder(this)
-                .add("toAdd", toAdd)
+                .add("toDelete", toDelete)
                 .toString();
     }
 }

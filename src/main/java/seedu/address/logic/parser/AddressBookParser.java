@@ -50,6 +50,8 @@ public class AddressBookParser {
         logger.fine("Command word: " + commandWord + "; Arguments: " + arguments);
 
         switch (commandWord) {
+        case DeleteTagsCommand.COMMAND_WORD:
+            return new DeleteTagsParser().parse(arguments);
         case AddTagsCommand.COMMAND_WORD:
             return new AddTagsParser().parse(arguments);
 
@@ -87,6 +89,8 @@ public class AddressBookParser {
             return new FilterTagCommandParser().parse(arguments);
         case ShowAllCommand.COMMAND_WORD:
             return new ShowAllCommand();
+        case ListTagCommand.COMMAND_WORD:
+            return new ListTagCommand();
 
         default:
             logger.finer("This user input caused a ParseException: " + userInput);

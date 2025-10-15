@@ -37,7 +37,7 @@ public class UniqueTagList {
         return tagMap.containsKey(toCheck);
     }
 
-    public boolean personHasValidTags(Person person) {
+    public boolean personHasValidTags(Person person) throws TagNotFoundException {
         requireNonNull(person);
         Set<Tag> tags = person.getTags();
         for (Tag tag : tags) {
@@ -51,13 +51,23 @@ public class UniqueTagList {
     /**
      * Deletes a tag type from the map and removes it from all associated persons.
      */
-    public void deleteTagType(Tag toDelete) {
+    private void deleteTagType(Tag toDelete) {
         requireNonNull(toDelete);
         ObservableList<Person> persons = tagMap.get(toDelete);
         for (Person person : persons) {
             person.removeTag(toDelete);
         }
         tagMap.remove(toDelete);
+    }
+
+    /**
+     * Deletes multiple tag types from the map.
+     */
+    public void deleteTagTypes(Set<Tag> tagsToDelete) {
+        requireNonNull(tagsToDelete);
+        for (Tag tag : tagsToDelete) {
+                deleteTagType(tag);
+            }
     }
     /**
      * Adds a person to the list of persons for the given tag.
