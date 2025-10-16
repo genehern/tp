@@ -6,9 +6,11 @@ import java.util.Set;
 import seedu.address.model.person.Address;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.Name;
+import seedu.address.model.person.Parent;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
 import seedu.address.model.person.Remark;
+import seedu.address.model.person.Student;
 import seedu.address.model.tag.Tag;
 import seedu.address.model.util.SampleDataUtil;
 
@@ -21,6 +23,8 @@ public class PersonBuilder {
     public static final String DEFAULT_PHONE = "85355255";
     public static final String DEFAULT_EMAIL = "amy@gmail.com";
     public static final String DEFAULT_ADDRESS = "123, Jurong West Ave 6, #08-111";
+    public static final String DEFAULT_REMARK = "";
+    public static final String DEFAULT_TAG = "Math";
 
     private Name name;
     private Phone phone;
@@ -37,8 +41,9 @@ public class PersonBuilder {
         phone = new Phone(DEFAULT_PHONE);
         email = new Email(DEFAULT_EMAIL);
         address = new Address(DEFAULT_ADDRESS);
-        remark = new Remark("");
+        remark = new Remark(DEFAULT_REMARK);
         tags = new HashSet<>();
+        tags.add(new Tag(DEFAULT_TAG));
     }
 
     /**
@@ -50,7 +55,9 @@ public class PersonBuilder {
         email = personToCopy.getEmail();
         address = personToCopy.getAddress();
         remark = personToCopy.getRemark();
-        tags = new HashSet<>(personToCopy.getTags());
+        if (personToCopy instanceof Student) {
+            tags = new HashSet<>(((Student) personToCopy).getTags());
+        }
     }
 
     /**
@@ -62,7 +69,7 @@ public class PersonBuilder {
     }
 
     /**
-     * Parses the {@code tags} into a {@code Set<Tag>} and set it to the {@code Person} that we are building.
+     * Parses the {@code tags} into a {@code Set<Tag>} and set it to the {@code Student} that we are building.
      */
     public PersonBuilder withTags(String ... tags) {
         this.tags = SampleDataUtil.getTagSet(tags);
@@ -101,8 +108,11 @@ public class PersonBuilder {
         return this;
     }
 
-    public Person build() {
-        return new Person(name, phone, email, address, remark, tags);
+    public Parent buildParent() {
+        return new Parent(name, phone, email, address, remark);
+    }
+    public Student buildStudent() {
+        return new Student(name, phone, email, address, remark, tags);
     }
 
 }

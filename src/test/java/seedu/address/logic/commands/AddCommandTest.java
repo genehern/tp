@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalPersons.ALICE;
+import static seedu.address.testutil.TypicalPersons.CARL;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -23,23 +24,30 @@ import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
 import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.ReadOnlyUserPrefs;
+import seedu.address.model.person.Parent;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.Student;
 import seedu.address.model.tag.Tag;
 import seedu.address.testutil.PersonBuilder;
 
 public class AddCommandTest {
 
     @Test
-    public void constructor_nullPerson_throwsNullPointerException() {
-        assertThrows(NullPointerException.class, () -> new AddCommand(null));
+    public void constructor_nullParent_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> new AddParentCommand(null));
     }
 
     @Test
-    public void execute_personAcceptedByModel_addSuccessful() throws Exception {
-        ModelStubAcceptingPersonAdded modelStub = new ModelStubAcceptingPersonAdded();
-        Person validPerson = new PersonBuilder().build();
+    public void constructor_nullStudent_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> new AddStudentCommand(null));
+    }
 
-        CommandResult commandResult = new AddCommand(validPerson).execute(modelStub);
+    @Test
+    public void execute_parentAcceptedByModel_addSuccessful() throws Exception {
+        ModelStubAcceptingPersonAdded modelStub = new ModelStubAcceptingPersonAdded();
+        Parent validPerson = new PersonBuilder().buildParent();
+
+        CommandResult commandResult = new AddParentCommand(validPerson).execute(modelStub);
 
         assertEquals(String.format(AddCommand.MESSAGE_SUCCESS, Messages.format(validPerson)),
                 commandResult.getFeedbackToUser());
@@ -47,9 +55,30 @@ public class AddCommandTest {
     }
 
     @Test
-    public void execute_duplicatePerson_throwsCommandException() {
-        Person validPerson = new PersonBuilder().build();
-        AddCommand addCommand = new AddCommand(validPerson);
+    public void execute_studentAcceptedByModel_addSuccessful() throws Exception {
+        ModelStubAcceptingPersonAdded modelStub = new ModelStubAcceptingPersonAdded();
+        Student validPerson = new PersonBuilder().buildStudent();
+
+        CommandResult commandResult = new AddStudentCommand(validPerson).execute(modelStub);
+
+        assertEquals(String.format(AddCommand.MESSAGE_SUCCESS, Messages.format(validPerson)),
+                commandResult.getFeedbackToUser());
+        assertEquals(Arrays.asList(validPerson), modelStub.personsAdded);
+    }
+
+    @Test
+    public void execute_duplicateParent_throwsCommandException() {
+        Parent validPerson = new PersonBuilder().buildParent();
+        AddCommand addCommand = new AddParentCommand(validPerson);
+        ModelStub modelStub = new ModelStubWithPerson(validPerson);
+
+        assertThrows(CommandException.class, AddCommand.MESSAGE_DUPLICATE_PERSON, () -> addCommand.execute(modelStub));
+    }
+
+    @Test
+    public void execute_duplicateStudent_throwsCommandException() {
+        Student validPerson = new PersonBuilder().buildStudent();
+        AddCommand addCommand = new AddStudentCommand(validPerson);
         ModelStub modelStub = new ModelStubWithPerson(validPerson);
 
         assertThrows(CommandException.class, AddCommand.MESSAGE_DUPLICATE_PERSON, () -> addCommand.execute(modelStub));
@@ -57,33 +86,60 @@ public class AddCommandTest {
 
     @Test
     public void equals() {
-        Person alice = new PersonBuilder().withName("Alice").build();
-        Person bob = new PersonBuilder().withName("Bob").build();
-        AddCommand addAliceCommand = new AddCommand(alice);
-        AddCommand addBobCommand = new AddCommand(bob);
+        Parent parentAlice = new PersonBuilder().withName("Alice").buildParent();
+        Parent parentBob = new PersonBuilder().withName("Bob").buildParent();
+        Student studentAlice = new PersonBuilder().withName("Alice").buildStudent();
+        Student studentBob = new PersonBuilder().withName("Bob").buildStudent();
+
+        AddParentCommand addParentAliceCommand = new AddParentCommand(parentAlice);
+        AddParentCommand addParentBobCommand = new AddParentCommand(parentBob);
+        AddStudentCommand addStudentAliceCommand = new AddStudentCommand(studentAlice);
+        AddStudentCommand addStudentBobCommand = new AddStudentCommand(studentBob);
 
         // same object -> returns true
-        assertTrue(addAliceCommand.equals(addAliceCommand));
+        assertTrue(addParentAliceCommand.equals(addParentAliceCommand));
+        assertTrue(addStudentAliceCommand.equals(addStudentAliceCommand));
+        assertTrue(addParentBobCommand.equals(addParentBobCommand));
+        assertTrue(addStudentBobCommand.equals(addStudentBobCommand));
 
         // same values -> returns true
-        AddCommand addAliceCommandCopy = new AddCommand(alice);
-        assertTrue(addAliceCommand.equals(addAliceCommandCopy));
+        AddParentCommand addParentAliceCommandCopy = new AddParentCommand(parentAlice);
+        assertTrue(addParentAliceCommand.equals(addParentAliceCommandCopy));
+        AddStudentCommand addStudentAliceCommandCopy = new AddStudentCommand(studentAlice);
+        assertTrue(addStudentAliceCommand.equals(addStudentAliceCommandCopy));
+        AddParentCommand addParentBobCommandCopy = new AddParentCommand(parentBob);
+        assertTrue(addParentBobCommand.equals(addParentBobCommandCopy));
+        AddStudentCommand addStudentBobCommandCopy = new AddStudentCommand(studentBob);
+        assertTrue(addStudentBobCommand.equals(addStudentBobCommandCopy));
 
         // different types -> returns false
-        assertFalse(addAliceCommand.equals(1));
+        assertFalse(addParentAliceCommand.equals(1));
+        assertFalse(addStudentAliceCommand.equals(1));
+        assertFalse(addParentBobCommand.equals(1));
+        assertFalse(addStudentBobCommand.equals(1));
 
         // null -> returns false
-        assertFalse(addAliceCommand.equals(null));
+        assertFalse(addParentAliceCommand.equals(null));
+        assertFalse(addStudentAliceCommand.equals(null));
+        assertFalse(addParentBobCommand.equals(null));
+        assertFalse(addStudentBobCommand.equals(null));
 
         // different person -> returns false
-        assertFalse(addAliceCommand.equals(addBobCommand));
+        assertFalse(addParentAliceCommand.equals(addStudentAliceCommand));
+        assertFalse(addParentAliceCommand.equals(addParentBobCommand));
+        assertFalse(addStudentAliceCommand.equals(addStudentBobCommand));
+        assertFalse(addStudentAliceCommand.equals(addParentBobCommand));
     }
 
     @Test
     public void toStringMethod() {
-        AddCommand addCommand = new AddCommand(ALICE);
-        String expected = AddCommand.class.getCanonicalName() + "{toAdd=" + ALICE + "}";
-        assertEquals(expected, addCommand.toString());
+        AddStudentCommand addStudentCommand = new AddStudentCommand(ALICE);
+        String expected = AddStudentCommand.class.getCanonicalName() + "{toAddS=" + ALICE + "}";
+        assertEquals(expected, addStudentCommand.toString());
+
+        AddParentCommand addParentCommand = new AddParentCommand(CARL);
+        String expectedParent = AddParentCommand.class.getCanonicalName() + "{toAddP=" + CARL + "}";
+        assertEquals(expectedParent, addParentCommand.toString());
     }
 
     /**

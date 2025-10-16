@@ -10,6 +10,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import seedu.address.logic.Logic;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.Student;
 
 /**
  * An UI component that displays information of a {@code Person}.
@@ -66,9 +67,15 @@ public class PersonCard extends UiPart<Region> {
         String linkedText = getLinkedText(person);
         linkedContacts.setText(linkedText.isEmpty() ? "" : "Linked: " + linkedText);
 
-        person.getTags().stream()
+        // show tags if person is a student
+        if (person instanceof Student) {
+            Student student = ((Student) person);
+            student.getTags().stream()
                 .sorted(Comparator.comparing(tag -> tag.tagName))
                 .forEach(tag -> tags.getChildren().add(new Label(tag.tagName)));
+        } else {
+            tags.getChildren().clear();
+        }
     }
 
     /**

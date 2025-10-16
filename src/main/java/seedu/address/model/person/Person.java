@@ -2,19 +2,18 @@ package seedu.address.model.person;
 
 import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
 
 import seedu.address.commons.util.ToStringBuilder;
-import seedu.address.model.tag.Tag;
 
 /**
  * Represents a Person in the address book.
  * Guarantees: details are present and not null, field values are validated, immutable.
  */
 public class Person {
+
+    // Role field
+    private final Role role;
 
     // Identity fields
     private final Name name;
@@ -24,19 +23,22 @@ public class Person {
     // Data fields
     private final Address address;
     private final Remark remark; // optional field
-    private final Set<Tag> tags = new HashSet<>();
 
     /**
      * Every field must be present and not null except remark.
      */
-    public Person(Name name, Phone phone, Email email, Address address, Remark remark, Set<Tag> tags) {
-        requireAllNonNull(name, phone, email, address, tags);
+    public Person(Role role, Name name, Phone phone, Email email, Address address, Remark remark) {
+        this.role = role;
+        requireAllNonNull(name, phone, email, address);
         this.name = name;
         this.phone = phone;
         this.email = email;
         this.address = address;
         this.remark = remark;
-        this.tags.addAll(tags);
+    }
+
+    public Role getRole() {
+        return role;
     }
 
     public Name getName() {
@@ -57,14 +59,6 @@ public class Person {
 
     public Remark getRemark() {
         return remark;
-    }
-
-    /**
-     * Returns an immutable tag set, which throws {@code UnsupportedOperationException}
-     * if modification is attempted.
-     */
-    public Set<Tag> getTags() {
-        return Collections.unmodifiableSet(tags);
     }
 
     /**
@@ -104,14 +98,13 @@ public class Person {
                 && phone.equals(otherPerson.phone)
                 && email.equals(otherPerson.email)
                 && address.equals(otherPerson.address)
-                && remark.equals(otherPerson.remark)
-                && tags.equals(otherPerson.tags);
+                && remark.equals(otherPerson.remark);
     }
 
     @Override
     public int hashCode() {
         // use this method for custom fields hashing instead of implementing your own
-        return Objects.hash(name, phone, email, address, remark, tags);
+        return Objects.hash(name, phone, email, address, remark);
     }
 
     @Override
@@ -122,8 +115,6 @@ public class Person {
                 .add("email", email)
                 .add("address", address)
                 .add("remark", remark)
-                .add("tags", tags)
                 .toString();
     }
-
 }

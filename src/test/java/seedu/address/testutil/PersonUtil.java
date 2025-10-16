@@ -8,9 +8,12 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
 
 import java.util.Set;
 
-import seedu.address.logic.commands.AddCommand;
+import seedu.address.logic.commands.AddParentCommand;
+import seedu.address.logic.commands.AddStudentCommand;
 import seedu.address.logic.commands.EditCommand.EditPersonDescriptor;
+import seedu.address.model.person.Parent;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.Student;
 import seedu.address.model.tag.Tag;
 
 /**
@@ -22,7 +25,11 @@ public class PersonUtil {
      * Returns an add command string for adding the {@code person}.
      */
     public static String getAddCommand(Person person) {
-        return AddCommand.COMMAND_WORD + " " + getPersonDetails(person);
+        if (person instanceof Student) {
+            return AddStudentCommand.COMMAND_WORD + " " + getPersonDetails(person);
+        }
+        assert person instanceof Parent : "Person is not a Student or Parent";
+        return AddParentCommand.COMMAND_WORD + " " + getPersonDetails(person);
     }
 
     /**
@@ -34,9 +41,14 @@ public class PersonUtil {
         sb.append(PREFIX_PHONE + person.getPhone().value + " ");
         sb.append(PREFIX_EMAIL + person.getEmail().value + " ");
         sb.append(PREFIX_ADDRESS + person.getAddress().value + " ");
-        person.getTags().stream().forEach(
-            s -> sb.append(PREFIX_TAG + s.tagName + " ")
-        );
+
+        if (person instanceof Student) {
+            Student student = ((Student) person);
+            student.getTags().stream().forEach(
+                    s -> sb.append(PREFIX_TAG + s.tagName + " ")
+            );
+        }
+
         return sb.toString();
     }
 

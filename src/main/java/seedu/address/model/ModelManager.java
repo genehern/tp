@@ -4,7 +4,6 @@ import static java.util.Objects.requireNonNull;
 import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -162,19 +161,19 @@ public class ModelManager implements Model {
     @Override
     public boolean link(Person a, Person b) {
         requireAllNonNull(a, b);
-        return relationshipGraph.addLink(a, b);
+        return addressBook.linkPersons(a, b);
     }
 
     @Override
     public boolean unlink(Person a, Person b) {
         requireAllNonNull(a, b);
-        return relationshipGraph.removeLink(a, b);
+        return addressBook.unlinkPersons(a, b);
     }
 
     @Override
     public List<Person> getLinkedPersons(Person person) {
         requireNonNull(person);
-        return new ArrayList<>(relationshipGraph.getLinked(person));
+        return addressBook.getLinkedPersons(person);
     }
 
     //=================Tag Management=========================================================

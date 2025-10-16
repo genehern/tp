@@ -1,5 +1,6 @@
 {
   "persons": [ {
+    "role": "STUDENT",
     "name": "Alice Pauline",
     "phone": "94351253",
     "email": "alice@example.com",
@@ -7,6 +8,7 @@
     "remark" : "",
     "tags": [ "friends" ]
   }, {
+    "role": "STUDENT",
     "name": "Alice Pauline",
     "phone": "94351253",
     "email": "pauline@example.com",

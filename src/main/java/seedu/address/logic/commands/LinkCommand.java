@@ -5,7 +5,9 @@ import static java.util.Objects.requireNonNull;
 import seedu.address.logic.Messages;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
+import seedu.address.model.person.Parent;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.Student;
 
 /**
  * Links two contacts together (e.g. a student and a parent).
@@ -22,27 +24,51 @@ public class LinkCommand extends Command {
     public static final String MESSAGE_DUPLICATE_LINK = "These contacts are already linked.";
     public static final String MESSAGE_SAME_PERSON = "Cannot link a contact to itself.";
     public static final String MESSAGE_NOT_FOUND = "One or both contacts could not be found.";
-
-    private final Person student;
-    private final Person parent;
+    public static final String MESSAGE_WRONG_INSTANCE = " must be a student or a parent contact.";
+    public static final String MESSAGE_STUDENTS_INVALID_LINK = "Cannot link two students together.";
+    public static final String MESSAGE_PARENTS_INVALID_LINK = "Cannot link two parents together.";
+    public static final String MESSAGE_NOT_STUDENT = "Student contact not found or is not of type Student.";
+    public static final String MESSAGE_NOT_PARENT = "Parent contact not found or is not of type Parent.";
+    private final Person personA;
+    private final Person personB;
 
     /**
      * Creates a LinkCommand with both contacts resolved.
      */
-    public LinkCommand(Person student, Person parent) {
-        requireNonNull(student);
-        requireNonNull(parent);
-        this.student = student;
-        this.parent = parent;
+    public LinkCommand(Person personA, Person personB) {
+        requireNonNull(personA);
+        requireNonNull(personB);
+        this.personA = personA;
+        this.personB = personB;
     }
 
     @Override
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
-
-        if (student.equals(parent)) {
+        //check for duplicate contact
+        if (personA.equals(personB)) {
             throw new CommandException(MESSAGE_SAME_PERSON);
         }
+        //check if contact is parent student class
+        if (!(personA instanceof Student) && !(personA instanceof Parent)) {
+            throw new CommandException(personA.getName() + MESSAGE_WRONG_INSTANCE);
+        }
+
+        if (!(personB instanceof Student) && !(personB instanceof Parent)) {
+            throw new CommandException(personB.getName() + MESSAGE_WRONG_INSTANCE);
+        }
+
+        //Prevent Student–Student and Parent–Parent links
+        if (personA instanceof Student && personB instanceof Student) {
+            throw new CommandException(MESSAGE_STUDENTS_INVALID_LINK);
+        }
+
+        if (personA instanceof Parent && personB instanceof Parent) {
+            throw new CommandException(MESSAGE_PARENTS_INVALID_LINK);
+        }
+        //force Student↔Parent order (so link order doesn’t matter)
+        Person student = personA instanceof Student ? personA : personB;
+        Person parent = personA instanceof Parent ? personA : personB;
 
         boolean success = model.link(student, parent);
         if (!success) {
@@ -62,8 +88,8 @@ public class LinkCommand extends Command {
             return false;
         }
         LinkCommand otherCommand = (LinkCommand) other;
-        return student.equals(otherCommand.student)
-                && parent.equals(otherCommand.parent);
+        return personA.equals(otherCommand.personA)
+                && personB.equals(otherCommand.personB);
     }
 }
 

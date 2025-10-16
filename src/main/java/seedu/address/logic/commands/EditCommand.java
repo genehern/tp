@@ -25,9 +25,11 @@ import seedu.address.model.Model;
 import seedu.address.model.person.Address;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.Name;
+import seedu.address.model.person.Parent;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
 import seedu.address.model.person.Remark;
+import seedu.address.model.person.Student;
 import seedu.address.model.tag.Tag;
 
 /**
@@ -110,6 +112,7 @@ public class EditCommand extends Command {
         Email updatedEmail = editPersonDescriptor.getEmail().orElse(personToEdit.getEmail());
         Address updatedAddress = editPersonDescriptor.getAddress().orElse(personToEdit.getAddress());
         Remark updatedRemark;
+
         if (editPersonDescriptor.getRemark() != null && editPersonDescriptor.getRemark().isPresent()) {
             // Edit remark only if a non-empty remark is provided
             updatedRemark = editPersonDescriptor.getRemark().orElse(personToEdit.getRemark());
@@ -117,9 +120,15 @@ public class EditCommand extends Command {
             // Keep existing remark
             updatedRemark = personToEdit.getRemark();
         }
-        Set<Tag> updatedTags = editPersonDescriptor.getTags().orElse(personToEdit.getTags());
 
-        return new Person(updatedName, updatedPhone, updatedEmail, updatedAddress, updatedRemark, updatedTags);
+        // Tags are only applicable to Students.
+        if (personToEdit instanceof Student) {
+            Set<Tag> updatedTags = editPersonDescriptor.getTags().orElse(((Student) personToEdit).getTags());
+            return new Student(updatedName, updatedPhone, updatedEmail, updatedAddress, updatedRemark, updatedTags);
+        } else {
+            return new Parent(updatedName, updatedPhone, updatedEmail, updatedAddress, updatedRemark);
+        }
+
     }
 
     @Override

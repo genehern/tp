@@ -12,6 +12,7 @@ import seedu.address.commons.exceptions.IllegalValueException;
 import seedu.address.model.AddressBook;
 import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.Student;
 
 /**
  * An Immutable AddressBook that is serializable to JSON format.
@@ -23,6 +24,7 @@ class JsonSerializableAddressBook {
 
     private final List<JsonAdaptedPerson> persons = new ArrayList<>();
 
+    private final List<JsonAdaptedLink> links = new ArrayList<>();
     /**
      * Constructs a {@code JsonSerializableAddressBook} with the given persons.
      */
@@ -37,7 +39,29 @@ class JsonSerializableAddressBook {
      * @param source future changes to this will not affect the created {@code JsonSerializableAddressBook}.
      */
     public JsonSerializableAddressBook(ReadOnlyAddressBook source) {
-        persons.addAll(source.getPersonList().stream().map(JsonAdaptedPerson::new).collect(Collectors.toList()));
+        persons.addAll(source.getPersonList().stream()
+                .map(this::identifyContactType)
+                .collect(Collectors.toList()));
+
+        if (source instanceof AddressBook) {
+            AddressBook ab = (AddressBook) source;
+            ab.getRelationshipGraph().getAllLinksAsPairs().forEach(
+                    pair -> links.add(new JsonAdaptedLink(pair.getKey(), pair.getValue()))
+            );
+        }
+    }
+
+    /**
+     * Helper function to be used with JsonSerializableAddressBook to use the appropriate JsonAdapterPerson class
+     * @param p a Person object
+     * @return an instance of the appropriate child class
+     */
+    private JsonAdaptedPerson identifyContactType(Person p) {
+        if (p instanceof Student) {
+            return new JsonAdaptedStudent((Student) p);
+        } else {
+            return new JsonAdaptedParent(p);
+        }
     }
 
     /**
@@ -47,13 +71,23 @@ class JsonSerializableAddressBook {
      */
     public AddressBook toModelType() throws IllegalValueException {
         AddressBook addressBook = new AddressBook();
-        for (JsonAdaptedPerson jsonAdaptedPerson : persons) {
-            Person person = jsonAdaptedPerson.toModelType();
-            if (addressBook.hasPerson(person)) {
+        for (JsonAdaptedPerson jsonPerson : persons) {
+            Person p = jsonPerson.toModelType();
+            if (addressBook.hasPerson(p)) {
                 throw new IllegalValueException(MESSAGE_DUPLICATE_PERSON);
             }
-            addressBook.addPerson(person);
+            addressBook.addPerson(p);
         }
+
+        // REBUILD LINKS
+        for (JsonAdaptedLink jsonLink : links) {
+            Person a = addressBook.findPersonByName(jsonLink.getA());
+            Person b = addressBook.findPersonByName(jsonLink.getB());
+            if (a != null && b != null) {
+                addressBook.linkPersons(a, b);
+            }
+        }
+
         return addressBook;
     }
 

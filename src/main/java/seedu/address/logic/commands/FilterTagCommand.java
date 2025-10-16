@@ -6,12 +6,12 @@ import seedu.address.model.Model;
 import seedu.address.model.person.TagContainsKeywordsPredicate;
 
 /**
- * Filters and lists all persons whose tags contain any of the specified keywords.
+ * Filters and lists all students whose tags contain any of the specified keywords.
  */
 public class FilterTagCommand extends Command {
 
     public static final String COMMAND_WORD = "filter";
-    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Filters persons by tag(s).\n"
+    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Filters students by tag(s).\n"
             + "Parameters: TAG [MORE_TAGS]...\n"
             + "Example: " + COMMAND_WORD + " math j2";
 

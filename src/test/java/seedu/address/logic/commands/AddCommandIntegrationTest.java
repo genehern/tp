@@ -11,7 +11,9 @@ import seedu.address.logic.Messages;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
+import seedu.address.model.person.Parent;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.Student;
 import seedu.address.testutil.PersonBuilder;
 
 /**
@@ -27,21 +29,41 @@ public class AddCommandIntegrationTest {
     }
 
     @Test
-    public void execute_newPerson_success() {
-        Person validPerson = new PersonBuilder().build();
+    public void execute_newStudent_success() {
+        Student validStudent = new PersonBuilder().buildStudent();
 
         Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
-        expectedModel.addPerson(validPerson);
+        expectedModel.addPerson(validStudent);
 
-        assertCommandSuccess(new AddCommand(validPerson), model,
-                String.format(AddCommand.MESSAGE_SUCCESS, Messages.format(validPerson)),
+        assertCommandSuccess(new AddStudentCommand(validStudent), model,
+                String.format(AddCommand.MESSAGE_SUCCESS, Messages.format(validStudent)),
+                expectedModel);
+    }
+
+    @Test
+    public void execute_newParent_success() {
+        Parent validParent = new PersonBuilder().buildParent();
+
+        Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
+        expectedModel.addPerson(validParent);
+
+        assertCommandSuccess(new AddParentCommand(validParent), model,
+                String.format(AddCommand.MESSAGE_SUCCESS, Messages.format(validParent)),
                 expectedModel);
     }
 
     @Test
     public void execute_duplicatePerson_throwsCommandException() {
         Person personInList = model.getAddressBook().getPersonList().get(0);
-        assertCommandFailure(new AddCommand(personInList), model,
+
+        AddCommand newCommand;
+        if (personInList instanceof Student) {
+            newCommand = new AddStudentCommand((Student) personInList);
+        } else {
+            newCommand = new AddParentCommand((Parent) personInList);
+        }
+
+        assertCommandFailure(newCommand, model,
                 AddCommand.MESSAGE_DUPLICATE_PERSON);
     }
 

@@ -1,10 +1,13 @@
 package seedu.address.model.util;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javafx.util.Pair;
 import seedu.address.model.person.Person;
 
 /**
@@ -60,4 +63,27 @@ public class RelationshipGraph {
         }
         links.remove(person);
     }
+
+    /** copy the content of param graph into this graph */
+    public void copyFrom(RelationshipGraph other) {
+        links.clear();
+        for (Map.Entry<Person, Set<Person>> entry : other.links.entrySet()) {
+            links.put(entry.getKey(), new HashSet<>(entry.getValue()));
+        }
+    }
+
+    public List<Pair<Person, Person>> getAllLinksAsPairs() {
+        List<Pair<Person, Person>> pairs = new ArrayList<>();
+        for (Map.Entry<Person, Set<Person>> entry : links.entrySet()) {
+            for (Person linked : entry.getValue()) {
+                // ensure each pair is only recorded once
+                if (entry.getKey().hashCode() < linked.hashCode()) {
+                    pairs.add(new Pair<>(entry.getKey(), linked));
+                }
+            }
+        }
+        return pairs;
+    }
+
+
 }
