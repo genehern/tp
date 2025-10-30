@@ -6,6 +6,8 @@ title: User Guide
 **ClassConnect** is a **desktop application** designed for **private tuition teachers** to efficiently manage their contacts.  
 It helps tutors organize information about their **students and their parents**, keeping communication and record-keeping simple and centralized.
 
+<img src="images/Ui.png" alt="Ui" width="400" style="height:auto;">
+
 ### Key Features
 
 - **Add and manage contacts** — Create and update entries for both students and parents.
