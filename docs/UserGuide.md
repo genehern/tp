@@ -67,16 +67,18 @@ Action | Description                     | Format, Examples
 **[Exit](#exiting-the-program--exit)** | Exit the application            | `exit`
 
 ### Command Parameter Summary
-Parameter | Description             | Example           | Constraints
-----------|-------------------------|-------------------|-------------
-`n/` | Name                    | `n/John Tan`      | Names should only contain alphabets, spaces, apostrophes (') and hyphens (-). <br> It is **compulsory** and should be at most 60 characters long. <br> if a / is included in the name, consider replacing it with -.
-`p/` | Phone number            | `p/+65 9876 5432` | Phone numbers should only contain digits, spaces, brackets (), adds (+) and hyphens (-). <br> It is **compulsory**  and should be 3 to 25 characters long.
-`e/` | Email address           | `e/John Tan @example.com` | Emails should follow the format of local-part@domain-part. <br> It is **compulsory** and should be at most 320 characters long. The domain-part itself should be at leasts 2 characters long.
-`a/` | Physical address        | `a/123, Clementi Rd, #12-34, Singapore 123456` | Addresses can contain any character. <br> It is **compulsory** and should be at most 300 characters long.
-`r/` | Remark                  | `r/Available on weekends` | Remarks can contain any character except for `/` or `\n`. <br> It is **optional** but should be at most 250 characters long.
-`t/` | Tag for student contacts | `t/Math` | Tags should only contain alphabets, digits and underscores (\_). <br> It is **optional** but should be at most 30 characters long. <br> Only tag values **already added** and shown in the "Tags" list on the right of the interface can be added to student contacts. 
-`sn/` | Student name for linking | `sn/John Tan` | Should follow the same constraints as `n/` above.
-`pn/` | Parent name for linking  | `pn/Mrs Tan` | Should follow the same constraints as `n/` above.
+### Command Parameter Summary
+
+| Parameter | Description | Example | Constraints |
+|------------|--------------|----------|--------------|
+| `n/` | Name | `n/John Tan` | Names should only contain alphabets, spaces, apostrophes (`'`), and hyphens (`-`).<br>It is **compulsory** and should be at most **60 characters** long.<br>If a `/` is included in the name, replace it with `-`. |
+| `p/` | Phone number | `p/+65 9876 5432` | Phone numbers should only contain digits, spaces, brackets `()`, plus signs (`+`), and hyphens (`-`).<br>It is **compulsory** and should be **3–25 characters** long. |
+| `e/` | Email address | `e/johntan@example.com` | Emails should follow the format `local-part@domain-part`.<br>It is **compulsory** and should be at most **320 characters** long.<br>The domain part must be at least **2 characters** long. |
+| `a/` | Physical address | `a/123, Clementi Rd, #12-34, Singapore 123456` | Addresses can contain any character.<br>It is **compulsory** and should be at most **300 characters** long. |
+| `r/` | Remark | `r/Available on weekends` | Remarks can contain any character except `/` or a newline (`\n`).<br>It is **optional** but should be at most **250 characters** long. |
+| `t/` | Tag for student contacts | `t/Math` | Tags should only contain alphabets, digits, and underscores (`_`).<br>It is **optional** but should be at most **30 characters** long.<br>Only tag values **already added** and shown in the “Tags” list on the right of the interface can be added to student contacts. |
+| `sn/` | Student name for linking | `sn/John Tan` | Should follow the same constraints as `n/` above. |
+| `pn/` | Parent name for linking | `pn/Mrs Tan` | Should follow the same constraints as `n/` above. |
 --------------------------------------------------------------------------------------------------------------------
 
 ### Adding a contact: `adds`/`addp`
