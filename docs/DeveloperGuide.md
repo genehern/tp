@@ -762,3 +762,9 @@ Prerequisites:
     3. Close the application.
     4. Relaunch the application.
        Expected: The contact added in Step 2 is still shown. This confirms that data saving and loading work correctly.
+
+### Planned Enhancements
+1. Storage format
+    - Currently: ClassConnect.json stores 2 copies of the "ROLE" attribute for each person on some devices.
+    - Issue: This is redundant but does not impact the proper functioning of the application.
+    - Planned: The JSON adapted files will be updated to only store one "ROLE" attribute per Person.  
