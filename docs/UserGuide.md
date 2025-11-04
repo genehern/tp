@@ -41,6 +41,20 @@ It helps tutors organize information about their **students and their parents**,
 --------------------------------------------------------------------------------------------------------------------
 
 ## Commands
+
+### Parameter Summary
+
+| Parameter | Description | Example | Constraints |
+|------------|--------------|----------|--------------|
+| `n/` | Name | `n/John Tan` | Names should only contain alphabets, spaces, apostrophes (`'`), and hyphens (`-`).<br>It is **compulsory** and should be at most **60 characters** long.<br>If a `/` is included in the name, replace it with `-`. |
+| `p/` | Phone number | `p/+65 9876 5432` | Phone numbers should only contain digits, spaces, brackets `()`, plus signs (`+`), and hyphens (`-`).<br>It is **compulsory** and should be **3–25 characters** long. |
+| `e/` | Email address | `e/johntan@example.com` | Emails should follow the format `local-part@domain-part`.<br>It is **compulsory** and should be at most **320 characters** long.<br>The domain part must be at least **2 characters** long. |
+| `a/` | Physical address | `a/123, Clementi Rd, #12-34, Singapore 123456` | Addresses can contain any character.<br>It is **compulsory** and should be at most **300 characters** long. |
+| `r/` | Remark | `r/Available on weekends` | Remarks can contain any character except `/` or a newline (`\n`).<br>It is **optional** but should be at most **250 characters** long. |
+| `t/` | Tag for student contacts | `t/Math` | Tags should only contain alphabets, digits, and underscores (`_`).<br>It is **optional** but should be at most **30 characters** long.<br>Only tag values **already added** and shown in the “Tags” list on the right of the interface can be added to student contacts. |
+| `sn/` | Student name for linking | `sn/John Tan` | Should follow the same constraints as `n/` above. |
+| `pn/` | Parent name for linking | `pn/Mrs Tan` | Should follow the same constraints as `n/` above. |
+
 ### Summary
 <div markdown="span" class="alert alert-primary">
 :bulb: **Tip:**
@@ -65,21 +79,6 @@ Action | Description                     | Format, Examples
 **[Filter](#filtering-by-tags-filter)** | Find contacts by tag(s)         | `filter TAG [MORE_TAGS]`<br> e.g., `filter Math Science`
 **[Help](#viewing-help--help)** | Opens the user guide            | `help`
 **[Exit](#exiting-the-program--exit)** | Exit the application            | `exit`
-
-### Command Parameter Summary
-### Command Parameter Summary
-
-| Parameter | Description | Example | Constraints |
-|------------|--------------|----------|--------------|
-| `n/` | Name | `n/John Tan` | Names should only contain alphabets, spaces, apostrophes (`'`), and hyphens (`-`).<br>It is **compulsory** and should be at most **60 characters** long.<br>If a `/` is included in the name, replace it with `-`. |
-| `p/` | Phone number | `p/+65 9876 5432` | Phone numbers should only contain digits, spaces, brackets `()`, plus signs (`+`), and hyphens (`-`).<br>It is **compulsory** and should be **3–25 characters** long. |
-| `e/` | Email address | `e/johntan@example.com` | Emails should follow the format `local-part@domain-part`.<br>It is **compulsory** and should be at most **320 characters** long.<br>The domain part must be at least **2 characters** long. |
-| `a/` | Physical address | `a/123, Clementi Rd, #12-34, Singapore 123456` | Addresses can contain any character.<br>It is **compulsory** and should be at most **300 characters** long. |
-| `r/` | Remark | `r/Available on weekends` | Remarks can contain any character except `/` or a newline (`\n`).<br>It is **optional** but should be at most **250 characters** long. |
-| `t/` | Tag for student contacts | `t/Math` | Tags should only contain alphabets, digits, and underscores (`_`).<br>It is **optional** but should be at most **30 characters** long.<br>Only tag values **already added** and shown in the “Tags” list on the right of the interface can be added to student contacts. |
-| `sn/` | Student name for linking | `sn/John Tan` | Should follow the same constraints as `n/` above. |
-| `pn/` | Parent name for linking | `pn/Mrs Tan` | Should follow the same constraints as `n/` above. |
---------------------------------------------------------------------------------------------------------------------
 
 ### Adding a contact: `adds`/`addp`
 
